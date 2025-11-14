@@ -24,6 +24,15 @@ This pipeline is meant to take as input the filtered fasta and contig annotation
 
 # Usage
 
+For compatibility with most computers, once this repo has been downloaded or cloned, build a docker image with the following command in the terminal:
+
+NOTE: There may be issues with Apple silicon architecture and --platform linux/amd64 will ensure compatible builds but may take longer to build.
+
+```
+cd path/to/repo
+docker build -t pipeline-501a:latest . --platform linux/amd64
+```
+
 To the `nextflow.config` file, use the following configuration options:
 ```
 params {
@@ -37,7 +46,7 @@ params {
 Then use the pipeline by entering the following into the terminal:
 
 ```
-nextflow run main.nf
+nextflow run main.nf -profile docker
 ```
 
 Another way to specify these options is to directly call it in the command line:
@@ -49,6 +58,5 @@ nextflow run main.nf \
     --filterIGHContigs false \
     --alignWhich DNA \
     --doPCoA true
+    -profile docker
 ```
-
-# TODO: add the conda env or docker/sif image info

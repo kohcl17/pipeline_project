@@ -127,7 +127,7 @@ workflow {
     splitCsv(sep: ",").\
     map{ row -> [row[0], file(row[1]), file(row[2]) ] }
 
-    nFiles = ch_map_file.count()
+    // nFiles = ch_map_file.count()
     
     pyirOut = run_pyIR(ch_map_file)
     
