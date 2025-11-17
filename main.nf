@@ -108,6 +108,7 @@ process msa {
     path input_file
     val alignWhich
     val doPCOA
+    val colourMSATipsBy
 
     // push the rds file. If just using * it will also recursively push the directory
     output:
@@ -116,7 +117,7 @@ process msa {
 
     script:
     """
-    msa.R ${input_file} ${alignWhich} ${doPCOA}
+    msa.R ${input_file} ${alignWhich} ${doPCOA} ${colourMSATipsBy}
     """
 }
 
@@ -150,5 +151,5 @@ workflow {
     //     unique_clonotype_files = filtered_file
     // }
 
-    msaOut = msa(filtered_file, params.alignWhich, params.doPCoA)
+    msa(filtered_file, params.alignWhich, params.doPCoA, params.colourMSATipsBy)
 }

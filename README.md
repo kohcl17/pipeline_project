@@ -20,7 +20,7 @@ RColorBrewer==1.1-3\
 dplyr==1.1.4
 
 # Pipeline Description
-This pipeline is meant to take as input the filtered fasta and contig annotation files from cellranger's vdj pipeline, and will output the multiple sequence alignment R data along with optional principal coordinate analysis (PCoA) plots of the sequence alignments. The pipeline will first annotate the contig annotation dataset with V3J clonotype information, denoted by the combination of a V gene, J gene, and CDR3 amino acid sequence, as described in this article by [Soto et al (2019)](https://www.nature.com/articles/s41586-019-0934-8).
+This pipeline takes as input the filtered fasta and contig annotation files from cellranger's vdj pipeline, and will output the multiple sequence alignment (MSA) R data along with the phylogenetic tree and an optional principal coordinate analysis (PCoA) plots of the sequence alignments. The pipeline will first annotate the contig annotation dataset with V3J clonotype information, denoted by the combination of a V gene, J gene, and CDR3 amino acid sequence, as described in this article by [Soto et al (2019)](https://www.nature.com/articles/s41586-019-0934-8). Next, PyIR will be used to filter out lower quality annotations such as contigs that contain stop codons, CDR3 regions that are non-continuous, and junctional regions that are out of frame [Gilchuk et al (2020)](https://www.nature.com/articles/s41551-020-0594-x#Sec10). Thereafter, the pipeline will optionally filter the contig annotations based on user specifications, merge and annotate the PyIR output with the cellranger annotations, and perform MSA with the ClustalOmega algorithm.
 
 # Usage
 
@@ -41,6 +41,7 @@ params {
     filterIGHContigs = false
     alignWhich = "DNA"
     doPCoA = true
+    colourMSATipsBy = 'c_gene'
 }
 ```
 Then use the pipeline by entering the following into the terminal:
@@ -49,7 +50,7 @@ Then use the pipeline by entering the following into the terminal:
 nextflow run main.nf -profile docker
 ```
 
-Another way to specify these options is to directly call it in the command line:
+Another way to specify these options is to directly call them in the command line:
 
 ```
 nextflow run main.nf \
@@ -57,6 +58,7 @@ nextflow run main.nf \
     --output ./results \
     --filterIGHContigs false \
     --alignWhich DNA \
-    --doPCoA true
+    --doPCoA true \
+    --colourMSATipsBy c_gene \
     -profile docker
 ```

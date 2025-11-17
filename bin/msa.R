@@ -96,11 +96,20 @@ PCOA_plot <- function(seq.file) {
     return(pcoa.plot.clr.dist)
 }
 
+plot.msa.trees <- function(treedat, colour.by = "V.name") {
+  phylo.plot <- ggtree(treedat) +
+    geom_tippoint(aes(colour = .data[[colour.by]])) +
+    geom_treescale(width = 0.05, offset = 1) +
+    theme_tree2()
+  return(phylo.plot)
+}
+
 #################################################################################
 args <- commandArgs(trailingOnly = TRUE)
 infile <- args[1]
 alignWhich <- args[2]
 doPCOA <- args[3]
+colour.by <- args[4]
 
 col.alignment <- ifelse(alignWhich == "DNA",
     "sequence_alignment",
@@ -118,10 +127,16 @@ aligned.list <- list()
 for (nm in names(df.list)) {
 	df <- df.list[[nm]]
 	seq.data <- align.sequences(df,
-		col.alignment = col.alignment,
-		col.seq.name = "sequence_id",
-		seq.type = alignWhich
+  col.alignment = col.alignment,
+  col.seq.name = "sequence_id",
+	seq.type = alignWhich
 	)
+
+  ggsave(paste("./", nm, "MSA_tree.pdf", sep = ""),
+         plot.msa.trees(seq.data$tree, colour.by = colour.by),
+         width = 8, height = 12
+         )
+
 	if (doPCOA) {
     plot.name <- paste("./", nm, "_PCoA.pdf", sep = "")
 		pcoa.plot <- PCOA_plot(seq.data)
