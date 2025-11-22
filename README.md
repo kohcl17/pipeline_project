@@ -26,7 +26,8 @@ This pipeline takes as input the filtered fasta and contig annotation files from
 
 For compatibility with most computers, once this repo has been downloaded or cloned, build a docker image with the following command in the terminal:
 
-NOTE: There may be issues with Apple silicon architecture and --platform linux/amd64 will ensure compatible builds but may take longer to build.
+> [!NOTE]
+> Please ensure that docker is running in the background before running the pipeline.
 
 ```
 cd path/to/repo
@@ -62,3 +63,22 @@ nextflow run main.nf \
     --colourMSATipsBy c_gene \
     -profile docker
 ```
+
+# Parameters
+## Input/Output
+**inputMap**: str | path to csv file containing sample_name,path/to/cellranger/filtered_contig_annotations.csv,path/to/cellranger/filtered_contig.fasta
+
+**output**: str | path to create an output directory
+
+## Contig Filtering & Alignment
+**filterIGContigs**: false or str of IG contigs in the c_gene column of filtered_contig_annotations.csv | filters the c_gene column
+
+**alignWhich**: str | DNA or AA
+
+## Graphs
+**doPCoA**: bool | add PCoA graphs which allows for condensed visualisation of the MSA phylogenetic tree
+
+**colourMSATipsBy**: str | colour the MSA phylogenetic tree by a certain column. During the annotation part of the pipeline, a IGHV subgroup column will be created and can be used for colouring by specifying IGHV.subgrp
+
+## Nextflow parameters
+**profile**: if no profile has been specified, nextflow will use your local environment which may not have the necessary packages installed. For best performance, create a docker image from the instructions above and specify profile docker.

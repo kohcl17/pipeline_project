@@ -21,7 +21,8 @@ RUN Rscript -e "\
     BiocManager::install('msa'); \
     BiocManager::install('ggtree'); \
     install.packages('tidytree'); \
-    install.packages('seqinr')"
+    install.packages('seqinr'); \
+    install.packages('patchwork')"
 
 # Set workdir
 COPY . /pipeline

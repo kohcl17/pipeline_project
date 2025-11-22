@@ -112,12 +112,14 @@ process msa {
 
     // push the rds file. If just using * it will also recursively push the directory
     output:
-    path "*.rds"
-    path "*.pdf", optional: true
+    path "msa_output"
 
     script:
     """
     msa.R ${input_file} ${alignWhich} ${doPCOA} ${colourMSATipsBy}
+
+    mkdir -p msa_output
+    mv *.rds *.pdf msa_output/ 2>/dev/null || true
     """
 }
 

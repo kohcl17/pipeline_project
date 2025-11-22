@@ -4,6 +4,8 @@
 library(dplyr)
 library(RColorBrewer)
 library(ggplot2)
+library(patchwork)
+library(zip)
 
 # Multiple sequence alignment
 library(Biostrings)
@@ -86,20 +88,40 @@ PCOA_plot <- function(seq.file) {
                                    y = PCoA2, 
                                    colour = x)
                       ) +
-    geom_point() +
+    geom_point(shape = 1) +
     labs(title = nm) +
     scale_colour_gradientn(colours = brewer.pal(6, "YlGnBu"),
                           name = "distance from 0"
                           ) +
     theme_classic()
 
-    return(pcoa.plot.clr.dist)
+  pcoa.plt.clr.ighv <- ggplot(combined.data, 
+                              aes(x = PCoA1, 
+                                  y = PCoA2, 
+                                  colour = IGHV.subgrp)
+                              ) +
+    geom_point(shape = 1) +
+    labs(title = nm) +
+    theme_classic()
+
+  pcoa.plt.clr.cgene <- ggplot(combined.data, 
+                            aes(x = PCoA1, 
+                                y = PCoA2, 
+                                colour = c_gene)
+                            ) +
+    geom_point(shape = 1) +
+    labs(title = nm) +
+    theme_classic()
+
+  pw.pcoa <- pcoa.plot.clr.dist + pcoa.plt.clr.ighv + pcoa.plt.clr.cgene
+
+    return(pw.pcoa)
 }
 
 plot.msa.trees <- function(treedat, colour.by = "V.name") {
   phylo.plot <- ggtree(treedat) +
     geom_tippoint(aes(colour = .data[[colour.by]])) +
-    geom_treescale(width = 0.05, offset = 1) +
+    geom_treescale(width = 0.05, offset = 1, y = 0.5) +
     theme_tree2()
   return(phylo.plot)
 }
@@ -140,7 +162,7 @@ for (nm in names(df.list)) {
 	if (doPCOA) {
     plot.name <- paste("./", nm, "_PCoA.pdf", sep = "")
 		pcoa.plot <- PCOA_plot(seq.data)
-    ggsave(plot.name, pcoa.plot, width = 5, height = 4)
+    ggsave(plot.name, pcoa.plot, width = 15, height = 4)
 	}
  aligned.list[[nm]] <- seq.data
 }
