@@ -5,7 +5,6 @@ library(dplyr)
 library(RColorBrewer)
 library(ggplot2)
 library(patchwork)
-library(zip)
 
 # Multiple sequence alignment
 library(Biostrings)

@@ -17,7 +17,8 @@ ggplot2==3.5.2\
 stringr==1.5.2\
 ggtree=3.16.3\
 RColorBrewer==1.1-3\
-dplyr==1.1.4
+dplyr==1.1.4 \
+patchwork==1.3.2
 
 # Pipeline Description
 This pipeline takes as input the filtered fasta and contig annotation files from cellranger's vdj pipeline, and will output the multiple sequence alignment (MSA) R data along with the phylogenetic tree and an optional principal coordinate analysis (PCoA) plots of the sequence alignments. The pipeline will first annotate the contig annotation dataset with V3J clonotype information, denoted by the combination of a V gene, J gene, and CDR3 amino acid sequence, as described in this article by [Soto et al (2019)](https://www.nature.com/articles/s41586-019-0934-8). Next, PyIR will be used to filter out lower quality annotations such as contigs that contain stop codons, CDR3 regions that are non-continuous, and junctional regions that are out of frame [Gilchuk et al (2020)](https://www.nature.com/articles/s41551-020-0594-x#Sec10). Thereafter, the pipeline will optionally filter the contig annotations based on user specifications, merge and annotate the PyIR output with the cellranger annotations, and perform MSA with the ClustalOmega algorithm.

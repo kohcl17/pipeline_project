@@ -5,7 +5,7 @@ library(stringr)
 
 args <- commandArgs(trailingOnly = TRUE)
 infile <- args[1]
-outfile = file.path(".", "filtered_contigs.csv")
+outfile <- file.path(".", "filtered_contigs.csv")
 
 filter.by <- str_replace_all(args[2], ",", "|")
 
