@@ -3,13 +3,13 @@ The dataset was from the [CellRanger vdj example dataset](https://www.10xgenomic
 
 # Hypothesis
 
-I hypothesise that majority of the aligned sequences will cluster by their variable (V) gene the most. Seeing as the dataset is from a healthy individual, I expect to see a modest B-cell receptor (BCR) repertoire as less clonal expansion would have occurred, thus resulting in lower BCR mutations and diversity. 
+I hypothesise that majority of the aligned sequences that are filtered by IGHG constant region genes will predominantly be composed of the IGHG1 subgroup, as this subgroup predominantly targets toxins and viruses. Seeing as the dataset is from a healthy individual, I expect to see a modest B-cell receptor (BCR) repertoire as less clonal expansion would have occurred, thus resulting in smaller BCR contig mutation distances from the phylogenetic tree and lower diversity in terms of VDJ profiles.
 
 # Aim 
-I aim to identify the most mutated sequences with the highest number of unique molecular identifiers (UMIs) as this indicates a clonotype that has been found to be more diverse. 
+I aim to identify the most mutated contig sequences with the highest number of unique molecular identifiers (UMIs) as this indicates higher diversity and possibly clonal expansion. 
 
 # Objective
-The objective of this pipeline is to identify BCR sequences that contribute to greater clonal diversity in the hopes that running it with a particular disease perturbation, for example H5N1, will yield a set of sequences that can be used for monoclonal antibody production. 
+The objective of this pipeline is to identify BCR sequences that contribute to greater clonal diversity in the hopes that running it with a particular disease perturbation, for example H5N1, will yield a set of sequences that can be used for monoclonal antibody production.
 
 # Pipeline Description
 
@@ -27,7 +27,7 @@ The following steps will be taken in this pipeline:
 
 6. Graphs of the phylogenetic tree alignments will be generated along with an optional principal coordinate analysis (PCoA) plot for each sample.
 
-7. The filtered contigs will be ranked by mutation distance as determined by MSA as well as number of clones based on unique molecular identifiers (UMIs).
+7. The filtered contigs will be ranked by mutation distance as determined by MSA as well as number of clones based on UMIs.
 
 ## Input
 
@@ -150,5 +150,9 @@ nextflow run main.nf \
 **profile**: if no profile has been specified, nextflow will use your local environment which may not have the necessary packages installed. For best performance, create a docker image from the instructions above and specify profile docker.
 
 # Expected Output
-
 The expected output can be found in the expected_results folder of this repository.
+
+# Future Work
+
+- Basic visualisation of repertoire diversity, with some emphasis on V3J clonotypes
+- Contigs from multiple samples or even group-level comparisons
