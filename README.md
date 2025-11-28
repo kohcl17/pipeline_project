@@ -1,8 +1,15 @@
 # Dataset
 The dataset was from the [CellRanger vdj example dataset](https://www.10xgenomics.com/datasets/human-b-cells-from-a-healthy-donor-1-k-cells-2-standard-6-0-0). The dataset contains 1105 CD19+ B-cells from a healthy male donor aged 27. The filtered contig annotations csv file contains the annotated VDJ contigs that passed cellranger's filtering algorithm. The filtered fasta files should contain the same number of annotations as the csv file but in fasta format (ie. just sequences and the contig sequence id).
 
-# Hypothesis, Aims, and Objectives
-I hypothesise that majority of the aligned sequences will cluster by their variable (V) gene the most. Seeing as the dataset is from a healthy individual, I expect to see a modest B-cell receptor (BCR) repertoire as less clonal expansion would have occurred, thus resulting in lower BCR mutations and diversity. I aim to identify the most mutated sequences with the highest number of unique molecular identifiers (UMIs) as this indicates a clonotype that has been found to be more diverse. The objective of this pipeline is to identify BCR sequences that contribute to greater clonal diversity in the hopes that running it with a particular disease perturbation, like H5N1 for instance, will yield a set of sequences that can be used for monoclonal antibody production. 
+# Hypothesis
+
+I hypothesise that majority of the aligned sequences will cluster by their variable (V) gene the most. Seeing as the dataset is from a healthy individual, I expect to see a modest B-cell receptor (BCR) repertoire as less clonal expansion would have occurred, thus resulting in lower BCR mutations and diversity. 
+
+# Aim 
+I aim to identify the most mutated sequences with the highest number of unique molecular identifiers (UMIs) as this indicates a clonotype that has been found to be more diverse. 
+
+# Objective
+The objective of this pipeline is to identify BCR sequences that contribute to greater clonal diversity in the hopes that running it with a particular disease perturbation, for example H5N1, will yield a set of sequences that can be used for monoclonal antibody production. 
 
 # Pipeline Description
 
@@ -32,22 +39,22 @@ input.csv file with the following specifications:
 
 ## Output 
 
-pyir/
+**pyir/**
 - sample_pyir_output.tsv: file containing pyIR output
 
-merge_and_annotate/
+**merge_and_annotate/**
 - each sample's pyIR output merged with cellranger contig annotation files
 - this is prior to filtering the samples by c_gene column, an optional parameter to be set
 
-filtered/
+**filtered/**
 - sample-merged filtered contigs based on the optional parameter --filterIGHContigs
 
-msa/
+**msa/**
 - alignment_data.rds: an R data structure containing a list of all the samples' multiple sequence alignment (MSA) data and supporting files
 - sample_MSA_tree.pdf: phylogenetic tree of MSA
 - sample_PCoA.pdf: Principal Coordinate Analysis (PCoA) plots of the MSA tree as an alternative way to visualise the data
 
-clonotype_rank/
+**clonotype_rank/**
 - sample_rank_paired.csv: a file containing an additional column 'rank' which ranks the contigs
 
 pipeline_dag.html: the directed acrylic graph (DAG) showing how the pipeline has used the parameters and input files, as well as how the processes link to each other.
