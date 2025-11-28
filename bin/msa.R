@@ -148,10 +148,10 @@ aligned.list <- list()
 for (nm in names(df.list)) {
 	df <- df.list[[nm]]
 	seq.data <- align.sequences(df,
-  col.alignment = col.alignment,
-  col.seq.name = "sequence_id",
-	seq.type = alignWhich
-	)
+                              col.alignment = col.alignment,
+                              col.seq.name = "sequence_id",
+                              seq.type = alignWhich
+                              )
 
   ggsave(paste("./", nm, "MSA_tree.pdf", sep = ""),
          plot.msa.trees(seq.data$tree, colour.by = colour.by),

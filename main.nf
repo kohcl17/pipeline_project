@@ -1,7 +1,7 @@
 // run pyir
 process run_pyIR {
     // this only publishes the directory AFTER the process
-    publishDir "${params.output}", mode: 'copy', overwrite: true
+    publishDir "${params.output}", mode: 'copy', overwrite: true, pattern: "*_pyir_output.tsv"
 
     // take in the input file paths and the filters to use
     input:
@@ -33,7 +33,7 @@ process merge_and_annotate {
     output:
     path "*.csv"
 
-    // the R script writes INTO working directory (ie. when Nextflow starts it says 'work')
+    // the R script writes INTO working directory (ie. when Nextflow starts it says 'work/')
     script:
     """
     merge_and_annotate.R ${sampleID} ${annotation} ${pyirOut}
@@ -59,7 +59,7 @@ process merge_samples {
     """
 }
 
-// filter c_gene column (heavy chain)
+// filter c_gene column
 process filter_IGH_contigs {
     // this only publishes the directory AFTER the process
     publishDir "${params.output}", mode: 'copy', overwrite: true
@@ -123,6 +123,29 @@ process msa {
     """
 }
 
+process clonotype_rank {
+    // this only publishes the directory AFTER the process
+    publishDir "${params.output}", mode: 'copy', overwrite: true
+    
+    // take in the input file paths and the filters to use
+    input:
+    path input_file
+    path input_merged_sample_annotations
+    path input_filtered_sample_annotations
+
+    // push the clonotype_rank output. If just using * it will also recursively push the directory
+    output:
+    path "clonotype_rank_output"
+
+    script:
+    """
+    clonotype_rank.R ${input_file}/alignment_data.rds ${input_merged_sample_annotations} ${input_filtered_sample_annotations}
+
+    mkdir -p clonotype_rank_output
+    mv *_rank_paired.csv clonotype_rank_output/ 2>/dev/null || true
+    """
+}
+
 // Workflow block
 workflow {
     ch_map_file = channel.\
@@ -153,5 +176,6 @@ workflow {
     //     unique_clonotype_files = filtered_file
     // }
 
-    msa(filtered_file, params.alignWhich, params.doPCoA, params.colourMSATipsBy)
+    msaOut = msa(filtered_file, params.alignWhich, params.doPCoA, params.colourMSATipsBy)
+    clonotypeRankOut = clonotype_rank(msaOut, merge_sample_files, filtered_file)
 }
