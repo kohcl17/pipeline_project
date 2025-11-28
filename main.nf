@@ -62,7 +62,7 @@ process merge_samples {
 // filter c_gene column
 process filter_IGH_contigs {
     // this only publishes the directory AFTER the process
-    // publishDir "${params.output}", mode: 'copy', overwrite: true
+    publishDir "${params.output}/filtered", mode: 'copy', overwrite: true
     
     // take in the input file paths and the filters to use
     input:
@@ -93,18 +93,18 @@ process msa {
 
     // push the rds file. If just using * it will also recursively push the directory
     output:
-    path "msa_output"
+    path "msa"
 
     script:
     """
     msa.R ${input_file} ${alignWhich} ${doPCOA} ${colourMSATipsBy}
 
-    mkdir -p msa_output
-    mv *.rds *.pdf msa_output/ 2>/dev/null || true
+    mkdir -p msa
+    mv *.rds *.pdf msa/ 2>/dev/null || true
     """
 }
 
-process clonotype_rank {
+process contig_rank {
     // this only publishes the directory AFTER the process
     publishDir "${params.output}", mode: 'copy', overwrite: true
     
@@ -114,16 +114,16 @@ process clonotype_rank {
     path input_merged_sample_annotations
     path input_filtered_sample_annotations
 
-    // push the clonotype_rank output. If just using * it will also recursively push the directory
+    // push the contig_rank output. If just using * it will also recursively push the directory
     output:
-    path "clonotype_rank_output"
+    path "contig_rank"
 
     script:
     """
-    clonotype_rank.R ${input_file}/alignment_data.rds ${input_merged_sample_annotations} ${input_filtered_sample_annotations}
+    contig_rank.R ${input_file}/alignment_data.rds ${input_merged_sample_annotations} ${input_filtered_sample_annotations}
 
-    mkdir -p clonotype_rank_output
-    mv *_rank_paired.csv clonotype_rank_output/ 2>/dev/null || true
+    mkdir -p contig_rank
+    mv *_rank_paired.csv contig_rank/ 2>/dev/null || true
     """
 }
 
@@ -150,5 +150,5 @@ workflow {
     }
 
     msaOut = msa(filtered_file, params.alignWhich, params.doPCoA, params.colourMSATipsBy)
-    clonotypeRankOut = clonotype_rank(msaOut, merge_sample_files, filtered_file)
+    contigRankOut = contig_rank(msaOut, merge_sample_files, filtered_file)
 }

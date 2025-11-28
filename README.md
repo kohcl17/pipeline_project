@@ -5,15 +5,62 @@ The dataset was from the [CellRanger vdj example dataset](https://www.10xgenomic
 I hypothesise that majority of the aligned sequences will cluster by their variable (V) gene the most. Seeing as the dataset is from a healthy individual, I expect to see a modest B-cell receptor (BCR) repertoire as less clonal expansion would have occurred, thus resulting in lower BCR mutations and diversity. I aim to identify the most mutated sequences with the highest number of unique molecular identifiers (UMIs) as this indicates a clonotype that has been found to be more diverse. The objective of this pipeline is to identify BCR sequences that contribute to greater clonal diversity in the hopes that running it with a particular disease perturbation, like H5N1 for instance, will yield a set of sequences that can be used for monoclonal antibody production. 
 
 # Pipeline Description
-This pipeline takes as input the filtered fasta and contig annotation files from cellranger's vdj pipeline, and will output the multiple sequence alignment (MSA) R data along with the phylogenetic tree and an optional principal coordinate analysis (PCoA) plots of the sequence alignments. The pipeline will first annotate the contig annotation dataset with V3J clonotype information, denoted by the combination of a V gene, J gene, and CDR3 amino acid sequence, as described in this article by [Soto et al (2019)](https://www.nature.com/articles/s41586-019-0934-8). Next, PyIR will be used to filter out lower quality annotations such as contigs that contain stop codons, CDR3 regions that are non-continuous, and junctional regions that are out of frame [Gilchuk et al (2020)](https://www.nature.com/articles/s41551-020-0594-x#Sec10). Thereafter, the pipeline will optionally filter the contig annotations based on user specifications, merge and annotate the PyIR output with the cellranger annotations, and perform MSA with the ClustalOmega algorithm. Graphs of the phylogenetic tree alignments will be generated along with an optional principal coordinate analysis (PCoA) plot for each sample.
 
+The following steps will be taken in this pipeline:
+
+1. Annotate the contig annotation dataset with V3J clonotype information, denoted by the combination of a V gene, J gene, and CDR3 amino acid sequence, as described in this article by [Soto et al (2019)](https://www.nature.com/articles/s41586-019-0934-8). 
+
+2. [PyIR](https://doi.org/10.1186/s12859-020-03649-5), a Python wrapper for IgBLAST, will be used to filter out lower quality annotations such as contigs that contain stop codons, CDR3 regions that are non-continuous, and junctional regions that are out of frame [Gilchuk et al (2020)](https://www.nature.com/articles/s41551-020-0594-x#Sec10). 
+
+3. (Optional) Filter the contig annotations based on user specifications.
+
+4. Merge and annotate the PyIR output with the cellranger annotations.
+
+5. Perform multiple sequence alignment (MSA) with the ClustalOmega algorithm.
+
+6. Graphs of the phylogenetic tree alignments will be generated along with an optional principal coordinate analysis (PCoA) plot for each sample.
+
+7. The filtered contigs will be ranked by mutation distance as determined by MSA as well as number of clones based on unique molecular identifiers (UMIs).
+
+## Input
+
+input.csv file with the following specifications:
+- sampleName, absolute path to filtered fasta, absolute path to filtered contig annotation files
+
+> [!NOTE]
+> Both fasta and contig annotation files should be provided by CellRanger output from its vdj pipeline.
+
+## Output 
+
+pyir/
+- sample_pyir_output.tsv: file containing pyIR output
+
+merge_and_annotate/
+- each sample's pyIR output merged with cellranger contig annotation files
+- this is prior to filtering the samples by c_gene column, an optional parameter to be set
+
+filtered/
+- sample-merged filtered contigs based on the optional parameter --filterIGHContigs
+
+msa/
+- alignment_data.rds: an R data structure containing a list of all the samples' multiple sequence alignment (MSA) data and supporting files
+- sample_MSA_tree.pdf: phylogenetic tree of MSA
+- sample_PCoA.pdf: Principal Coordinate Analysis (PCoA) plots of the MSA tree as an alternative way to visualise the data
+
+clonotype_rank/
+- sample_rank_paired.csv: a file containing an additional column 'rank' which ranks the contigs
+
+pipeline_dag.html: the directed acrylic graph (DAG) showing how the pipeline has used the parameters and input files, as well as how the processes link to each other.
 
 # Environment
 
+## Nextflow/Java
+openjdk==17.0.10\
+nextflow==25.04.8.5956
+
 ## Python
 python==3.13.5\
-pyir==1.5.0\
-nextflow==25.04.8.5956
+pyir==1.5.0
 
 ## R
 R==4.5.1\
@@ -94,3 +141,7 @@ nextflow run main.nf \
 
 ## Nextflow parameters
 **profile**: if no profile has been specified, nextflow will use your local environment which may not have the necessary packages installed. For best performance, create a docker image from the instructions above and specify profile docker.
+
+# Expected Output
+
+The expected output can be found in the expected_results folder of this repository.
