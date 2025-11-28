@@ -132,12 +132,12 @@ nextflow run main.nf \
 
 # Parameters
 ## Input/Output
-**inputMap**: str | path to csv file containing sample_name,path/to/cellranger/filtered_contig_annotations.csv,path/to/cellranger/filtered_contig.fasta
+**inputMap**: str | path to input csv file
 
 **output**: str | path to create an output directory
 
 ## Contig Filtering & Alignment
-**filterIGContigs**: false or str of IG contigs in the c_gene column of filtered_contig_annotations.csv | filters the c_gene column
+**filterIGContigs**: false or str regex pattern of IG contigs in the c_gene column of filtered_contig_annotations.csv | filters the c_gene column
 
 **alignWhich**: str | DNA or AA
 
