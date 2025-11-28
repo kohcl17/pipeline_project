@@ -1,7 +1,7 @@
 // run pyir
 process run_pyIR {
     // this only publishes the directory AFTER the process
-    publishDir "${params.output}", mode: 'copy', overwrite: true, pattern: "*_pyir_output.tsv"
+    publishDir "${params.output}/pyir", mode: 'copy', overwrite: true, pattern: "*_pyir_output.tsv"
 
     // take in the input file paths and the filters to use
     input:
@@ -23,7 +23,7 @@ process run_pyIR {
 // merged pyIR output and adds the V3J clonotypes
 process merge_and_annotate {
     // this only publishes the directory AFTER the process
-    publishDir "${params.output}", mode: 'copy', overwrite: true
+    publishDir "${params.output}/merged_annotated", mode: 'copy', overwrite: true
     
     // take in the input file paths and the filters to use
     input:
@@ -42,7 +42,7 @@ process merge_and_annotate {
 
 process merge_samples {
     // this only publishes the directory AFTER the process
-    publishDir "${params.output}", mode: 'copy', overwrite: true
+    // publishDir "${params.output}", mode: 'copy', overwrite: true
     
     // take in all the csvs from merge_and_annotate
     input:
@@ -62,7 +62,7 @@ process merge_samples {
 // filter c_gene column
 process filter_IGH_contigs {
     // this only publishes the directory AFTER the process
-    publishDir "${params.output}", mode: 'copy', overwrite: true
+    // publishDir "${params.output}", mode: 'copy', overwrite: true
     
     // take in the input file paths and the filters to use
     input:
@@ -78,25 +78,6 @@ process filter_IGH_contigs {
     filter_IGH_contigs.R ${input_file} ${filterBy}
     """
 }
-
-// TODO: think about whether to ask for unique clonotypes or common?
-// process find_unique_clonotypes {
-//     // this only publishes the directory AFTER the process
-//     publishDir "${params.output}", mode: 'copy', overwrite: true
-    
-//     // take in the input file paths and the filters to use
-//     input:
-//     path input_file
-
-//     // push the csv file. If just using * it will also recursively push the directory
-//     output:
-//     path "*.csv"
-
-//     script:
-//     """
-//     find_unique_clonotypes.R ${input_file}
-//     """
-// }
 
 // Do multiple sequence alignment
 process msa {
@@ -152,8 +133,6 @@ workflow {
     fromPath(params.inputMap).\
     splitCsv(sep: ",").\
     map{ row -> [row[0], file(row[1]), file(row[2]) ] }
-
-    // nFiles = ch_map_file.count()
     
     pyirOut = run_pyIR(ch_map_file)
     
@@ -169,12 +148,6 @@ workflow {
     } else {
         filtered_file = merge_sample_files
     }
-    
-    // if (nFiles > 1) {
-    //     unique_clonotype_files = find_unique_clonotypes(filtered_file)
-    // } else {
-    //     unique_clonotype_files = filtered_file
-    // }
 
     msaOut = msa(filtered_file, params.alignWhich, params.doPCoA, params.colourMSATipsBy)
     clonotypeRankOut = clonotype_rank(msaOut, merge_sample_files, filtered_file)
