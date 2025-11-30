@@ -31,7 +31,7 @@ The following steps will be taken in this pipeline:
 
 The graph below shows where the configuration parameters will be used and the sequence of processes in this pipeline.
 
-
+![](DAG.png)
 
 ## Input
 
