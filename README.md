@@ -29,6 +29,10 @@ The following steps will be taken in this pipeline:
 
 7. The filtered contigs will be ranked by mutation distance as determined by MSA as well as number of clones based on UMIs.
 
+The graph below shows where the configuration parameters will be used and the sequence of processes in this pipeline.
+
+
+
 ## Input
 
 input.csv file with the following specifications:
